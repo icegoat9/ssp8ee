@@ -26,8 +26,7 @@ Write code in the "code" tab:
 
 Click the link to run the code on the web-based PICO8 Education Edition! You may need to click twice: once to bring up the context menu with the "Open link" option:
 
-<img src="screenshots/hello_link.PNG" width=300>
-<img src="screenshots/hello_run.gif">
+<img src="screenshots/hello_link.PNG" width=300><img src="screenshots/hello_run.gif">
 
 ## Sprites via POKE()
 
@@ -51,8 +50,7 @@ But wait, there's more... I added a template so you can also 'draw' a sprite by 
 
 The newest version of the code tab I showed above lets you specify a spreadsheet tab to load sprite data from, and voila, a tiny interactive program with sprites:
 
-<img src="screenshots/clouds_code.PNG" width=300>
-<img src="screenshots/clouds_run.gif">
+<img src="screenshots/clouds_code.PNG" width=300><img src="screenshots/clouds_run.gif">
 
 As with everything in this hacky project, I had to make a lot of compromises. Since the URL format has a string size limit, and I haven't taken the time to understand the compression the official tools use, including this sprite data in the URL significantly reduces how much code you can encode into a URL. This spreadsheet template I show here limits you to 8 specific sprites (#1-#4, #17-#20), and if you don't enter a spritesheet name in the code tab it won't encode sprite data at all, freeing up code space.
 
@@ -102,8 +100,7 @@ what the actual link is before clicking on it)
 
 * By using the Google Sheets app as the 'editor', you get access to all its UI features. These may vary across platforms and will change over time, but explore where you can tap, long-press, and so on (on cells, borders, row labels on the left, icons on the bottom), which provide various shortcuts to let you copy, paste, quickly insert and delete rows, zoom out to see more of a spritesheet, and so on... 
 
-<img src="screenshots/sheets_deleterows.JPG" width=300>
-<img src="screenshots/sheets_paste.JPG" width=300>
+<img src="screenshots/sheets_deleterows.JPG" width=300><img src="screenshots/sheets_paste.JPG" width=300>
 
 Using Sheets as the frontend also gives you undo, a basic revision history in case you mess something up, syncing of work across devices, the ability to change fonts and formatting, and so on.
 
