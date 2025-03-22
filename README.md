@@ -106,7 +106,7 @@ It's good to be cautious about opening / running arbitrary programs. And--
 
 Using Sheets as the frontend also gives you undo, a basic revision history in case you mess something up, syncing of work across devices, the ability to change fonts and formatting, and so on.
 
-* Autocorrect and other "helpful" writing features may be annoying. Since PICO-8 is normally case-sensitive, behind the scenes the spreadsheet converts any code you write to lowercase before generating a cart link. This prevents you from using uppercase unless you edit the spreadsheet, but that was worth it for me.
+* Autocorrect, autocapitalization, and other "helpful" writing features may be annoying. Since PICO-8 is normally case-sensitive, behind the scenes the spreadsheet converts any code you write to lowercase before generating a cart link. This prevents you from using uppercase unless you edit the spreadsheet, but that was worth it for me.
 
   * If you're finding autocorrect trips you up, you could always disable it while using this
 
