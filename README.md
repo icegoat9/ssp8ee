@@ -100,7 +100,7 @@ It's good to be cautious about opening / running arbitrary programs. And--
 
 ## Tips & Tricks
 
-* By using the Google Sheets app as the 'editor', you get access to all its UI features. These may vary across platforms and will change over time, but explore where you can tap, long-press, and so on (on cells, borders, row labels on the left, icons on the bottom), which provide various shortcuts to let you copy, paste, quickly insert and delete rows, zoom out to see more of a spritesheet, and so on... 
+* By using the Google Sheets app as the 'editor', you get access to all its UI features, some of which happen to be useful for the types of editing we want to do. These may vary across platforms and will change over time, but explore where you can tap, long-press, and so on (on cells, borders, row labels on the left, icons on the bottom), which provide various shortcuts to let you copy, paste, quickly insert and delete rows, zoom out to see more of a spritesheet, and so on... 
 
 <img src="screenshots/sheets_deleterows.JPG" width=300><img src="screenshots/sheets_paste.JPG" width=300>
 
@@ -110,11 +110,11 @@ Using Sheets as the frontend also gives you undo, a basic revision history in ca
 
   * If you're finding autocorrect trips you up, you could always disable it while using this
 
-* Look carefully at your keyboard-- in the iOS version of Google Sheets, a little bar with commonly-used math symbols and parentheses appears above your keyboard even when in alphabet mode, which can save you a few clicks. And some phones provide customizable keyboards.
+* Look carefully at your keyboard-- at least in the current iOS version of Google Sheets, a little bar with commonly-used math symbols and parentheses appears above your keyboard even when in alphabet mode, which can save you a few clicks. And some phones provide customizable keyboards.
 
 ## Limitations / Known Issues
 
-This is a fun hack, but I'd almost never choose over working at a computer with keyboard if I had one, for a number of reasons:
+This is a fun hack, but I'd almost never choose it over working at a computer with keyboard if I have one, for a few reasons:
 
 * As with many systems build on spreadsheets, this will be brittle to changes such as moving critical cells or inserting new rows in a few specific locations (for example, the 'spritesheet' functionality assumes a specific # of sprites in a specific location on the template sheet). I've tried to minimize that sensitivity by using as few intermediate value cells as possible and placing them in locations that would be unlikely to be disturbed, but things can break... at least you can always undo or go back in a sheet's version history.
 
@@ -123,7 +123,7 @@ This is a fun hack, but I'd almost never choose over working at a computer with 
 * The P8 @URL format or Sheets UI could change at any time, breaking this
   * At least I'm not trying to write a PICO-8 interpreter or emulator, which would break every time there's an update to PICO8-- this is just translating the code to a string PICO-8 itself will unpack and interpret.
 
-* I intended to support the extended PICO8 character set (e.g. symbols from 128 and up: cat face, button arrows, hiragana, and so on) with a lookup table, but various aspects of my formulas break on double-width characters. It's certainly solvable, but given that it would be difficult to enter these extended characters in the first place (as they're not on the default mobile soft keyboard), I decided not to support them for now. This would be a bigger limitation if this were a tool for editing existing carts-- but given the size limitations it's mostly for blank page prototyping where it's easy enough to write `btnp(1)` instead of `btnp(⬅️)`.
+* I intended to support the extended PICO8 character set (e.g. symbols from 128 and up: cat face, arrows, hiragana, and so on) with a lookup table, but my initial formula approach breaks on double-width characters. It's certainly solvable, but given that it would be difficult to enter these extended characters in the first place (as they're not on the default mobile soft keyboard), I decided not to try to support them for now. This would be a bigger limitation if this were a tool for editing existing carts-- but given the size limitations it's mostly for blank page prototyping where it's easy enough to write `btnp(1)` instead of `btnp(⬅️)`.
 
 * Phone keyboard autocorrect / autocomplete can make some undesired swaps that require manual fixing (I only use this occasionally so haven't resorted to disabling autocomplete). For example, on my device it sometimes replaces two dashes (the comment prefix) with an emdash (unrecognized character). I've considered adding a custom search-and-replace pass on the code to reverse things like that where intent is clear, but it's low priority.
 
@@ -137,9 +137,11 @@ This is a fun hack, but I'd almost never choose over working at a computer with 
 
 ### Release Notes
 
-* v0.5, 2025-03-21: Arbitrary numbering for this first version I'm sharing with other people. I'm not actively working on it (this was intended to just be a few-evening side project when I got inspired). I expect I'll hear a range of ideas or people will build their own improved versions, in which case I'll link to them from here.
+* **v0.5, 2025-03-21**: Arbitrary numbering for this first version I'm sharing with other people.
 
-### Background
+I expect I'll hear a range of ideas or people will build their own improved versions, in which case I'll link to them from here.
+
+### Motivation
 
 I bought PICO-8 years ago and occasionally use it as the equivalent of 'doodling in a sketchbook'-- spending an hour or two on a rainy day making some one-off interactive animation or game. Back when I was on twitter, I'd occasionally join the "tweetcart" community or game jams, focused on building some toy application or game in 580 characters of PICO-8 code or less, and it's impressive what is possible. When I'm waiting in a long line or on a bus, what if rather than scrolling news and social media on my phone I could be writing little throwaway animations? That's relatively challenging to do on a phone, though.
 
