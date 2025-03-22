@@ -4,7 +4,7 @@ A way to create simple games / animations in PICO-8 on your phone, using... a sp
 
 <img src="screenshots/hello_full.gif">
 
-I made this strange solution to an extremely niche problem for myself, but figured I might as well share it for the handful of other people it would be interesting to. Everything below assumes you're already experienced with PICO-8 development.
+I built this strange solution to an extremely niche problem for myself, but figured I might as well share it for the handful of other people it would be interesting to. Everything below assumes you're already experienced with PICO-8 development.
 
 Do you enjoy [PICO-8](https://www.lexaloffle.com/pico-8.php), a cozy 'fantasy console' you can use to make 128-pixel games and art? But do you wish you had a way to create and edit programs on mobile, for example while waiting in line or on the train?
 
@@ -14,7 +14,7 @@ If you make a personal copy of the below Google spreadsheet, open it in the Goog
 
 > **https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/**
 
-There are plenty of limitations / known issues, read on for more details.
+There are various limitations, read on for more details.
 
  *(this page is a long text dump, jotted down in an evening-- check the 'table of contents' icon in the upper right to jump between sections)*
  
@@ -34,7 +34,7 @@ Click the link to run the code on the web-based PICO8 Education Edition! You may
 
 What if you want to add sprites?
 
-One method is to use the fact that key PICO8 data you see in the standard IDE (sprites, map, sound, and so on) are mapped to specific memory locations (see "Base RAM Memory Layout" in the manual). This is the method some text-only 'tweetcarts' (or whatever we're calling them these days) take advantage of to create sprites.
+One method is to remember that key PICO8 data in the official IDE (sprites, map, sound, and so on) are mapped to specific memory locations (see "Base RAM Memory Layout" in the manual). This is the method some text-only 'tweetcarts' (or whatever we're calling them these days) take advantage of to create sprites.
 
 For example, these commands set pixel values in the memory location corresponding to sprite 1. I use this particular format of POKE4() because if you squint you can visualize the sprite from the hex values (caveat: byte pairs and pixels are swapped, so the sprite is horizontally flipped from what you might expect):
 
@@ -46,23 +46,23 @@ This lets you use a call to spr() to draw it to the screen.
 
 ## Spreadsheet Sprite Editor?
 
-But wait, there's more... I added a template so you can also 'draw' a sprite by entering color values 0-15. Through the magic of conditional formatting these are even highlighted with PICO8 color values as you go:
+But wait, there's more... I added a template so you can also 'draw' a sprite by entering color values 0-15. Through the magic of conditional formatting these will even be highlighted with PICO8 color values as you go:
 
 <img src="screenshots/clouds_spr1z.PNG" width=300><img src="screenshots/clouds_spr2z.PNG" width=300>
 
-The newest version of the code tab I showed above lets you specify a spreadsheet tab to load sprite data from, and voila, a tiny interactive program with sprites:
+The newest version of the code tab lets you specify a spreadsheet tab to load sprite data from, and voila, a tiny program using the above sprites, written with my thumbs on mobile:
 
 <img src="screenshots/clouds_code.PNG" width=300><img src="screenshots/clouds_run.gif">
 
-As with everything in this hacky project, I had to make a lot of compromises. Since the URL format has a string size limit, and I haven't taken the time to understand the compression the official tools use, including this sprite data in the URL significantly reduces how much code you can encode into a URL. This spreadsheet template I show here limits you to 8 specific sprites (#1-#4, #17-#20), and if you don't enter a spritesheet name in the code tab it won't encode sprite data at all, freeing up code space.
+As with everything in this project, I had to make compromises. The URL format has a strict size limit, and I haven't taken the time to decipher the compression the official tools use, so including this sprite data in the URL significantly reduces how much code you'll have space for. I set up this template to use just 8 specific sprites (#1-#4, #17-#20) to save space, and if you don't enter a spritesheet name in the code tab it won't encode sprite data at all, freeing up more room for code.
 
 You can look at all the spreadsheet formulas and customize this to your liking, though.
 
 ## Map, Sound
 
-While it would be amusing to add spreadsheet-based map and sfx/music editors, I don't believe those are supported in the "URL format" for short PICO8 EE carts (technically, map data could be supported in lower spritesheet memory, but when I built a prototype this consumed too much of the URL for little benefit). Additionally, I expect carts written to fit the limited number of characters in the URL format are unlikely to use map or sfx significantly.
+While it would be amusing to add spreadsheet-based map and sfx/music editors, I don't believe those are supported in the "URL format" for short PICO8 EE carts (technically, map data could be supported in lower spritesheet memory, but when I built a prototype this consumed too much of the URL for little benefit). Additionally, I expect carts written to fit the limited number of characters in the URL format are unlikely to use map or sfx much.
 
-Instead, you can generate them in code-- using MSET or POKE to generate a map, and POKE or the P8SCII shortcode ?"\a..." to play audio.
+Instead, you can generate them in code-- using MSET or POKE to generate a map, and POKE or the P8SCII shortcode `?"\a..."` to play audio.
 
 For details, see the PICO8 manual and BBS, but for example:
 
