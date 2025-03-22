@@ -88,7 +88,7 @@ end
 
 The sample program "DuckWorld" in the spreadsheet uses all of these to make a little scrolling world for a duck to explore and eat apples:
 
-<img src="screenshots/duckworld_run.gif">
+<img src="screenshots/duckworld_run2.gif">
 
 ## Security
 
