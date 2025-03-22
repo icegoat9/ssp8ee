@@ -12,8 +12,6 @@ While it's easy to play PICO8 games on mobile, development is tricky-- there's n
 
 You can make a copy of the below Google spreadsheet, open it in the Google Sheets app on your phone, and edit code (and a few sprites). A collection of formulas then translate your work into a URL that you can click to open in the PICO-8 Education Edition.
 
-> [!NOTE]
->
 > https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/ 
 
 There are many limitations and known issues, see below...
@@ -49,8 +47,7 @@ This lets you use a call to spr() to draw it to the screen.
 
 But wait, there's more... I added a template so you can also 'draw' a sprite by entering color values 0-15. Through the magic of conditional formatting these are even highlighted with PICO8 color values as you go:
 
-<img src="screenshots/clouds_spr1z.PNG" width=300>
-<img src="screenshots/clouds_spr2z.PNG" width=300>
+<img src="screenshots/clouds_spr1z.PNG" width=300><img src="screenshots/clouds_spr2z.PNG" width=300>
 
 The newest version of the code tab I showed above lets you specify a spreadsheet tab to load sprite data from, and voila, a tiny interactive program with sprites:
 
