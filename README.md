@@ -95,7 +95,7 @@ The sample program "DuckWorld" in the spreadsheet uses all of these to make a li
 It's good to be cautious about opening / running arbitrary programs. And--
 
 * This spreadsheet does not contain any scripts, just formulas
-* It does not prompt you for any permissions-- it's self-contained and doesn't have or need access to your files or any external resources-- it just translates the code you write in it into a URL to the PICO8 Education Edition site
+* It does not prompt you for any permissions-- it's self-contained and doesn't have or need access to your files or external resources (well, other than existing in the cloud like any google document)-- it just translates the code you write in it into a URL to the PICO8 Education Edition site
 * You can look under the hood at what the (relatively simple) formulas do to generate that URL and check that the generated URL points at the https://www.pico-8-edu.com/ domain before clicking on it, if you want.
 
 ## Tips & Tricks
