@@ -12,7 +12,7 @@ While it's easy to play PICO8 games on mobile, development is tricky-- there's n
 
 You can make a copy of the below Google spreadsheet, open it in the Google Sheets app on your phone, and edit code (and a few sprites). A collection of formulas then translate your work into a URL that you can click to open in the PICO-8 Education Edition.
 
-> https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/ 
+> 🔗 https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/ 
 
 There are many limitations and known issues, see below...
 
@@ -22,7 +22,7 @@ Open the (read-only) spreadsheet and make your own copy of it (you need a Google
 
 Write code in the "code" tab:
 
-<img src="screenshots/hello_code.PNG" width=400>
+<img src="screenshots/hello_code.PNG" width=300>
 
 Click the link to run the code on the web-based PICO8 Education Edition! You may need to click twice: once to bring up the context menu with the "Open link" option:
 
@@ -36,7 +36,7 @@ One method is to use the fact that key PICO8 data you see in the standard IDE (s
 
 For example, these commands set pixel values in the memory location corresponding to sprite 1. I use this particular format of POKE4() because if you squint you can visualize the sprite from the hex values (caveat: byte pairs and pixels are swapped, so the sprite is horizontally flipped from what you might expect):
 
-<img src="screenshots/hellopoke_code.PNG" width=400>
+<img src="screenshots/hellopoke_code.PNG" width=300>
 
 This lets you use a call to spr() to draw it to the screen.
 
