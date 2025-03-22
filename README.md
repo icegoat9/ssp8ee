@@ -8,14 +8,16 @@ I made this strange solution to an extremely niche problem for myself, but figur
 
 Do you enjoy [PICO-8](https://www.lexaloffle.com/pico-8.php), a cozy 'fantasy console' you can use to make 128-pixel games and art? But do you wish you had a way to create and edit programs on mobile, for example while waiting in line or on the train?
 
-While it's easy to play PICO8 games on mobile, development is tricky-- there's no Android/iOS app, and the free [web-based PICO-8 Education Edition](https://www.lexaloffle.com/bbs/?tid=47278) doesn't easily let you edit without a keyboard and mouse. People in the community have figured out workarounds like pairing a bluetooth keyboard (but that's not something I'd have with me), or setting up some sort of remote desktop connection to PICO8 running on a computer at home... but here's a differently-hacky solution.
+While it's easy to play PICO8 games on mobile, development is tricky-- there's no Android/iOS app, and the free [web-based PICO-8 Education Edition](https://www.lexaloffle.com/bbs/?tid=47278) doesn't easily let you edit without a keyboard and mouse. People in the community have figured out workarounds like pairing a bluetooth keyboard (not something I carry), or some sort of remote desktop connection to PICO8 running on a computer at home... so here's a differently-hacky solution.
 
-You can make a copy of the below Google spreadsheet, open it in the Google Sheets app on your phone, and edit code (and a few sprites). A collection of formulas then translate your work into a URL that you can click to open in the PICO-8 Education Edition.
+If you make a personal copy of the below Google spreadsheet, open it in the Google Sheets app on your phone, and edit code (and a few sprites), a collection of formulas will then translate your work into a URL that you can click to run in the web-based PICO-8 Education Edition.
 
-> *https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/*
+> **https://docs.google.com/spreadsheets/d/1JBYUvbf5msDZphZl6bWZO7ellLLxmVQWjK5klt6JrBY/**
 
-There are many limitations and known issues, see below... *(this is a long linear text dump, the 'table of contents' icon typically on the top right in github markdown makes it easier to jump to some section)*
+There are plenty of limitations / known issues, read on for more details.
 
+ *(this page is a long text dump, jotted down in an evening-- check the 'table of contents' icon in the upper right to jump between sections)*
+ 
 ## Quickstart
 
 Open the (read-only) spreadsheet and make your own copy of it (you need a Google account, and I recommend using the Google Sheets app on your phone rather than trying to use it in a mobile browser...)
@@ -110,7 +112,7 @@ Using Sheets as the frontend also gives you undo, a basic revision history in ca
 
 * Look carefully at your keyboard-- in the iOS version of Google Sheets, a little bar with commonly-used math symbols and parentheses appears above your keyboard even when in alphabet mode, which can save you a few clicks. And some phones provide customizable keyboards.
 
-## Limitations / Known Issues / Caveats
+## Limitations / Known Issues
 
 This is a fun hack, but I'd almost never choose over working at a computer with keyboard if I had one, for a number of reasons:
 
@@ -123,16 +125,19 @@ This is a fun hack, but I'd almost never choose over working at a computer with 
 
 * I intended to support the extended PICO8 character set (e.g. symbols from 128 and up: cat face, button arrows, hiragana, and so on) with a lookup table, but various aspects of my formulas break on double-width characters. It's certainly solvable, but given that it would be difficult to enter these extended characters in the first place (as they're not on the default mobile soft keyboard), I decided not to support them for now. This would be a bigger limitation if this were a tool for editing existing carts-- but given the size limitations it's mostly for blank page prototyping where it's easy enough to write `btnp(1)` instead of `btnp(⬅️)`.
 
-* For now, I also automatically coerce everything to lowercase, since that's what you'd almost always want to use in PICO8 and it's case-sensitive.
+* Phone keyboard autocorrect / autocomplete can make some undesired swaps that require manual fixing (I only use this occasionally so haven't resorted to disabling autocomplete). For example, on my device it sometimes replaces two dashes (the comment prefix) with an emdash (unrecognized character). I've considered adding a custom search-and-replace pass on the code to reverse things like that where intent is clear, but it's low priority.
 
-* As mentioned earlier-- I see that PICO-8 does some types of compression when saving to @URL format. I didn't have time to try to figure out what it was doing, which limits how large a cart this spreadsheet can encode.
+* For now, I also automatically convert the input to lowercase before processing it, since that's what you'd almost always want to use in PICO8.
+
+* As mentioned earlier-- I see that PICO-8 applies some form of compression before saving to @URL format. I didn't have time to figure out what it's doing and took a simpler uncompressed route, which further limits how large a program this spreadsheet can encode.
 
 * I've only tested this on the iOS Sheets app, I don't recall how similar or different the Android Sheets UI is.
 
-
 ## Development Notes
 
-Let's call this first version I'm sharing with other people '0.5'. It works well enough that I'm not currently working on it (this started as just a few-evening project). But I expect I'll hear a range of ideas or people will fork it and make their own improved versions in which case I'll update this note.
+### Release Notes
+
+* v0.5, 2025-03-21: Arbitrary numbering for this first version I'm sharing with other people. I'm not actively working on it (this was intended to just be a few-evening side project when I got inspired). I expect I'll hear a range of ideas or people will build their own improved versions, in which case I'll link to them from here.
 
 ### Background
 
