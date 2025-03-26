@@ -77,6 +77,42 @@ I had my @URL Generator Spreadsheet mostly working, but was seeing errors where 
 So, specifically, for the PICO8 @URL encoding I'm using this b64 mapping of values 0-63:
 `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-`  (not `-_`)
 
+### Padding
+
+**Side note:** rather than doing 'proper' b64 encoding by adding padding '=' characters if the input length isn't a multiple of 3 (since each triplet of three bytes becomes 4 b64 values), I pad the input with spaces to a multiple of three. This is fine for text data where a few extra spaces at the end don't matter, but would be incorrect for arbitrary data...
+
+## @URL Code encoding
+
+Some similar trial and error tests of encoding simple program data and seeing what the output looks like. For reference, the character '0' is CHR(48) and '?' is CHR(63), chosen for having recognizable binary representations of '00110000' and '00111111'. 
+
+I show padding characters = as just unknown bits x for now.
+
+| Program text | @URL b64 encoding | Decimal | Binary |
+| -------- | --- | ---- | ------------- |
+| 0        | MA== | 12,0    | 001100,00xxxx,xxxxxx,xxxxxx |
+| 00       | MDA= | 12,3,0  | 001100,000011,0000xx,xxxxxx|
+| 000        | MDAw | 12,3,0,28 | 001100,000011,000000,011100 |
+| 000000        | MDAwMDAw |     | 000 encoding above repeated 2x |
+| ?        | Pw== | 15,28     | 001111,011100,xxxxxx,xxxxxx |
+| ??????        | Pz8-Pz8- | 15,51,60,63\*     | 001111,110011,111100,111111 |
+| 0?0?0? | MD8wPzA- | 12,3,60,28,15,51,0,63 | 001100,000011,111100,011100,001111,110011,000000,111111 |
+| 0 (9x)        | MDAwMDAwMDAw |     | 000 encoding above repeated 3x |
+| 0 (12x)        | AHB4YQAMAAsHGDw= |     | **not** the 000 encoding repeated 4x! |
+| 0 (24x)        | AHB4YQAYAAwHGPwG |     | **not** the 000 encoding repeated 8x! |
+
+Hmm, while the encoding of the first few 0s looks like straightforward repeating 00110000 patterns (basic b64 encoding with no compression), it's not that simple. Encoding of the ? makes it seem like I may have byte orders swapped and more.
+
+And then with longer non-trivial programs there's some addition compression being done on the input before b64 encoding:
+
+| Program text | @URL b64 encoding | Decimal | Binary |
+| -------- | --- | ---- | ------------- |
+| 000        | MDAw | 12,3,0,28 | 001100,000011,000000,011100 |
+| 0 (9x)        | MDAwMDAwMDAw |     | 000 encoding above repeated 3x |
+| 0 (12x)        | AHB4YQAMAAsHGDw= |     | **not** the 000 encoding repeated 4x! |
+| 0 (24x)        | AHB4YQAYAAwHGPwG |     | **not** the 000 encoding repeated 8x! |
+
+However, I've seen that my naive uncompressed input into a b64 encoder is still decoded by the Edu Edition (just very inefficient in space usage), so the compression must be optional and have some data that indicates it's compressed. So for now for my proof-of-concept spreadsheet IDE I'm going to ignore this. It will be a fun experiment to come back and look into it some day, though.
+
 # Google Sheets dev-notes-to-self
 
 It's possible to build a lot of functionality in spreadsheets (for example, a string->b64 encoder), even without incorporating scripting (AppScript, VBA, etc). A few more modern spreadsheet functions have made that easier than it was a decade ago in the time of Array Formulas and intermediate-data worksheets and so on:
