@@ -118,10 +118,11 @@ Further looking at outputs on a few realistic code snippets, some see straightfo
 | Program text | @URL b64 encoding | Does this trivially b64 decode to the input string? |
 | ------------ | --- | ------------- |
 | cls(1) circfill(50,50,30,8) | Y2xzKDEpIGNpcmNmaWxsKDUwLDUwLDMwLDgp | Yes |
-| cls(1)cls(1)cls(1) | AHB4YQASABE3H-8G20esu1w= | No! |
 | cls(1)cls(2)cls(3) | Y2xzKDEpY2xzKDIpY2xzKDMp | Yes |
+| cls(1)cls(1)cls(1) | AHB4YQASABE3H-8G20esu1w= | No! |
+| cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1) | AHB4YQA2ABM3H-8G20esu-z-Pw== | No! |
 
- The example with clearly repeating code encodes to something that decodes as binary data, again suggesting some compression routine has been run that looks for common multi-character substrings and replaces them with some token.
+The example with clearly repeating code snippets encodes to something that decodes as binary data, again suggesting some compression routine has been run that looks for common multi-character substrings and replaces them with some token. You can also see why, as the code with many copies of cls(1) is barely larger than the smaller code.
 
 One more intriguing hint before I take a break for now. If I b64 decode the string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a next-gen version used to compress data for the @URL format and I'm seeing a header that signals to the decoder that it's been used.
 
