@@ -12,8 +12,6 @@ Where, with a few [caveats](#b64-nonstandard-encoding), FOO is the b64 urlsafe-e
 
 By looking at how the encoded @URL changes if I change single characters of code or pixels in PICO8, there's also some compression applied to the input before the b64 encoding (some form of run-length encoding at least for sprite data-- most obvious if you have a row of pixels of the same color). However, the P8 Edu Edition can accept uncompressed data in the URL as well, which is what I started with just to get something working quickly.
 
-Note: It's possible this is all already well-understood and documented somewhere, but it's fun to spend some time exploring and learning.
-
 ## Spritesheet
 
 Using the SAVE @URL command on some simple carts and looking at the generated URL, I see that:
@@ -83,7 +81,7 @@ So, specifically, for the PICO8 @URL encoding I'm using this b64 mapping of valu
 
 ### Padding
 
-**Side note:** rather than doing 'proper' b64 encoding by adding padding '=' characters if the input length isn't a multiple of 3 (since each triplet of three bytes becomes 4 b64 values), I pad the input with spaces to a multiple of three. This is fine for text data where a few extra spaces at the end don't matter, but would be incorrect for arbitrary data...
+**Side note:** In the 'spreadsheet IDE', rather than doing proper b64 encoding by adding padding '=' characters if the input length isn't a multiple of 3 (since each triplet of three bytes becomes 4 b64 values), I pad the input with spaces to a multiple of three because that was the easiest way to get running. This works fine for text data where a few extra spaces at the end don't matter, but would be incorrect for arbitrary data...
 
 ## @URL Code encoding
 
@@ -124,9 +122,9 @@ Further looking at outputs on a few realistic code snippets, some see straightfo
 
 The example with clearly repeating code snippets encodes to something that decodes as binary data, again suggesting some compression routine has been run that looks for common multi-character substrings and replaces them with some token. You can also see why, as the code with many copies of cls(1) is barely larger than the smaller code.
 
-One more intriguing hint before I take a break for now. If I b64 decode the string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a next-gen version used to compress data for the @URL format and I'm seeing a header that signals to the decoder that it's been used.
+One more intriguing hint before I take a break for now. If I b64 decode the string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a next-gen version used to compress data for the @URL format and this is a header that tells the decoder built in to PICO8 Edu what compression is used?
 
-In particular, the first few output values in the b64-decoded version of `cls(1)cls(1)cls(1)` are `239,191,129,112,120,97,239,191,189,18,239,191,189,...` (followed by more values)`, and 112,120,97 is the string "PXA". So perhaps 239,191,129 indicates separators on a header, "PXA" is the compression method, and the standalone number "18" is a version (or length, or some other config value)? I could also just ask @zep and see if he wants to share, but this has been a fun diversion for now.
+In particular, the first few output values in the b64-decoded version of `cls(1)cls(1)cls(1)` are `239,191,129,112,120,97,239,191,189,18,239,191,189,...`, and 112,120,97 is the string "PXA". So perhaps 239,191,129 indicates separators on a header, "PXA" is the compression method, and the standalone number "18" is a version (or length, or some other config value)? I could also just ask @zep and see if he wants to share, but this has been a fun diversion for now.
 
 ### Compression is Optional
 
