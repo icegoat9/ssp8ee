@@ -143,7 +143,7 @@ I spent one evening poking around in the URL format for Education Edition (which
 
 ## Dev Notes and @URL format investigation
 
-Moved to [DEVNOTES.md](DEVNOTES.md)
+Scratchpad of dev notes moved to [DEVNOTES.md](DEVNOTES.md)
 
 ### Release Notes
 
