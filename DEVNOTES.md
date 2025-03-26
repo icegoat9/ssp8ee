@@ -98,9 +98,6 @@ I show padding characters = as just unknown bits x for now.
 | ?        | Pw== | 15,28     | 001111,011100,xxxxxx,xxxxxx |
 | ??????        | Pz8-Pz8- | 15,51,60,63\*     | 001111,110011,111100,111111 |
 | 0?0?0? | MD8wPzA- | 12,3,60,28,15,51,0,63 | 001100,000011,111100,011100,001111,110011,000000,111111 |
-| 0 (9x)        | MDAwMDAwMDAw |     | 000 encoding above repeated 3x |
-| 0 (12x)        | AHB4YQAMAAsHGDw= |     | **not** the 000 encoding repeated 4x! |
-| 0 (24x)        | AHB4YQAYAAwHGPwG |     | **not** the 000 encoding repeated 8x! |
 
 Hmm, while the encoding of the first few 0s looks like straightforward repeating 00110000 patterns (basic b64 encoding with no compression), it's not that simple. Encoding of the ? makes it seem like I may have byte orders swapped and more.
 
