@@ -1,6 +1,6 @@
 Keeping a rough scratchpad of some running dev notes here, rather than in the [README.md](README.md) which was already too long.
 
-# PICO8 Edu Edition @URL Format (WIP)
+# PICO8 Education Edition @URL Format (WIP)
 
 This is the format created by SAVE @URL in PICO-8, which saves a sufficiently-small program as a URL that can be shared with other users of the PICO8 Education Edition.
 
