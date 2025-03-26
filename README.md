@@ -141,7 +141,7 @@ I'm not a software engineer professionally, and I certainly don't have the free 
 
 I spent one evening poking around in the URL format for Education Edition (which can save very short 2000-character-or-less applications in a text URL), and saw it's an almost-b64-encoded translation of the code and spritesheet contents, and though it would be an interesting challenge to build a b64 encoder in spreadsheet formulas without script, and here we are...
 
-## Dev Notes
+## Dev Notes and @URL format investigation
 
 Moved to [DEVNOTES.md](DEVNOTES.md)
 

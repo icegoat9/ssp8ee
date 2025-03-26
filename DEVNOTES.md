@@ -1,18 +1,18 @@
 Keeping a rough scratchpad of some running dev notes here, rather than in the [README.md](README.md) which was already too long.
 
-## PICO8 Edu Edition @URL Format
+# PICO8 Edu Edition @URL Format
 
-Some notes from just a few hours of trial-and-error investigating what this format is.
+This is the format created by SAVE @URL in PICO-8, which saves a sufficiently-small program as a URL that can be shared with other users of the PICO8 Education Edition. I didn't find this format documented anywhere, so here are running notes from a few hours of trial-and-error investigating how it works. Anything below could have errors (or could become obsolete with changes after March 2025 when I'm writing this).
 
 `https://www.pico-8-edu.com/?c=FOO&g=BAR`
 
-Where, with a few caveats, FOO is the b64 urlsafe-encoded code and BAR is the encoded spritesheet data. `&g=...` can be omitted if not used.
+Where, with a few [caveats](#b64-error), FOO is the b64 urlsafe-encoded code and BAR is the encoded spritesheet data. `&g=...` can be omitted if not used.
 
-By looking at how the encoded @URL changes if I change single characters or pixels in PICO8, there's some compression (some form of run-length encoding at least for sprite data-- most obvious if you have a row of pixels of the same color) applied to the code before b64 encoding. However, the P8 Edu Edition can accept uncompressed data in the URL as well, which is what I started with just to get something working quickly.
+By looking at how the encoded @URL changes if I change single characters of code or pixels in PICO8, there's also some compression applied to the input before the b64 encoding (some form of run-length encoding at least for sprite data-- most obvious if you have a row of pixels of the same color). However, the P8 Edu Edition can accept uncompressed data in the URL as well, which is what I started with just to get something working quickly.
 
-Note: It's possible this is all already well-understood and documented somewhere on the PICO8 site or is used in other PICO8 export formats, I haven't dug into those, but it was fun to spend a few hours poking around.
+Note: It's possible this is all already well-understood and documented somewhere, but it's fun to spend some time exploring and learning.
 
-### Spritesheet
+## Spritesheet
 
 Using the SAVE @URL command on some simple carts and looking at the generated URL, I see that:
 
@@ -21,7 +21,7 @@ Using the SAVE @URL command on some simple carts and looking at the generated UR
 * However, a row of 8 dark blue (1) pixels encodes as `xE` rather than `BBBBBBBB`. There's some run-length encoding going on that stores identical consecutive pixels (only) in a more compact format, as a row of 8 alternating pixel values of 1,2,1,2,1,2,1,2 is encoded as the uncompressed `BCBCBCBC`.
   * This makes sense as a design choice, because otherwise all the black background pixels in the spritesheet would take up an enormous amount of URL space with an A for each one...
 
-### Spritesheet compression
+### Spritesheet Compression
 
 Trial and error on some simple pixel patterns in the spritesheet gives these encodings:
 
@@ -40,7 +40,7 @@ That is, the encoding of two blue (color 1) pixels `11` is {01}{0001}, while thr
 
 Looking at longer pixel patterns, though:
 
-| Row of 8 sprite pixel values     | @URL b64 encoding | Decimal (tbd byte order) | Binary (byte pair order swapped) |
+| Row of 8 sprite pixel values     | @URL b64 encoding | Decimal | Binary (byte pair order swapped) |
 | -------- | --- | ---- | ------------- |
 | 1111     | xA | 49,0 | 000000,110001|
 | 11111    | xB | 49,1 | 000001,110001 |
@@ -48,62 +48,38 @@ Looking at longer pixel patterns, though:
 | (8x) 1 | xE | 49,4 | 000100,110001 |
 | (16x) 1  | xM | 49,12 | 001100,110001 |
 | (64x) 1  | x8 | 49,60 | 111100,110001 |
-| (67x) 1  | x- | 49,63 | 111111,110001 |
+| (67x) 1  | x- | 49,63\* | 111111,110001 |
 
-We see that the single b64 value in the previous table can only encode up to 4 consecutive pixels of a color (2 bits for # of pixels, 4 bits for color #). Once we need to encode more than 4 pixels there's something more going on.
+We see that the single b64 value in the previous table can only encode up to 3 consecutive pixels of a color (2 bits for # of pixels, 4 bits for color #). Once we need to encode more than 3 pixels there's something more going on.
 
 If we swap the order of the bytes, it looks like the encoding of N pixels of value V is something more complicated. 
-Let's define A as the 6-bit value MAX(N-4,0) and B as the 2-bit value IF(N>4,4,N). Then the encoding appears to be: `{ A }{ B }{ V }`
+Let's define A as the 6-bit value `MAX(N-4,0)` and B as the 2-bit value `IF(N>4,4,N)`. Then the encoding appears to be: `{ A }{ B-1 }{ V }`
 
-That is, use the two bits left in the first character to count 1-4 pixels, and if there are more, add more characters that encode the "# of pixels above 4" (but leave the high bits in the first character set to 11 rather than set them as MOD(N,4) or use them as part of a larger binary number). Interesting optimization.
+That is, use the two bits remaining in the character that indicates color to count 1-3 pixels, and if there are more, set these two bits to indicate 4 and add another character that encodes the "# of pixels above 4". It's an interesting optimization to not use all of the bits (including the 2 in the first character) to encode an 8-bit value, but I can see it makes the decoder more straightforward: the decoder can treat any character whose high bits are not '11' as representing 1-3 pixels, and if it sees '11' in the high bits it knows to look to another character for the # of pixels.
 
 Looking at even longer pixel patterns that need three or more b64 characters:
 
 | Row of 8 sprite pixel values     | @URL b64 encoding | Decimal (tbd byte order) | Binary (byte order swapped) |
 | -------- | --- | ---- | ------------- |
-| (67x) 1  | x- | 49,63 | 111111,110001 |
-| (68x) 1  | x-B | 49,63,1 | 000001,111111,110001, |
-| (69x) 1  | x-R | 49,63,17 | 010001,111111,110001, |
-| (72x) 1  | x-xB | 49,63,49,1 | 000001,110001,111111,110001 |
+| (67x) 1  | x- | 49,63\* | 111111,110001 |
+| (68x) 1  | x-B | 49,63\*,1 | 000001,111111,110001, |
+| (69x) 1  | x-R | 49,63\*,17 | 010001,111111,110001, |
+| (72x) 1  | x-xB | 49,63\*,49,1 | 000001,110001,111111,110001 |
 
-At first it was puzzling that we jumped so quickly from three to four characters, but then I see it's just the pattern above, repeated. So it appears that we're not trying to encode arbitrarily long sequences of the same pixel: each pair of b64 characters can represent up to 67 pixels, and if we need 68 or more pixels we just start the encoding over.
+At first it was puzzling that we jumped so quickly from three to four characters, but then I see it's just the pattern above, repeated. So it appears that we're not trying to encode arbitrarily long sequences of the same pixel: each pair of b64 characters can represent up to 67 pixels, and if we need 68 or more pixels we just start the encoding over. This uses slightly more characters than a more complex scheme in a few circumstances (in particular, if you have between 70 and 139 pixels of a color in a row this uses 4 characters rather than a theoretical 3 you could use with a different encoding scheme), but it keeps the decoder simpler. Also, in PICO8 applications I think a common reason to have many pixels of the same color is the black background that wraps around. If you're only using the first 4 sprites, for example, you have 96 black pixels in each 128-pixel-wide spritesheet row. And I imagine the main goal is to encode these in just a few characters (`w-wZ` encodes 96 black pixels). It doesn't really matter if this takes 3 or 4 characters when the goal is not to use 96 characters.
 
+Why are the 63s above labeled 63\*? See the next section...
 
+## b64 error?
 
+I had my @URL Generator Spreadsheet mostly working, but was seeing errors where '>' and '?' characters (CHRs 62 and 63) in code were sometimes (but not always) swapped when opening a cart link generated by the spreadsheet in Education Edition. Adding or removing whitespace in the cart seemed to make the problem go away?! Eventually I discoverd that PICO8's @URL format seems to swap the meaning of '-' and '_' in its b64 encoding compared to the typical urlsafe encoding. Those represent values 62 and 63, so we'd expect a common decoding issue when > or ? characters line up with three-character boundaries in the input data (we'd also see this for other combinations of characters but mostly less used extended characters). I don't know if this is some light obfuscation or was unintentional, but I've adjusted this wrapper to match what PICO8's URL format seems to expect.
 
+So, specifically, for the PICO8 @URL encoding I'm using this b64 mapping of values 0-63:
+`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-`  (not `-_`)
 
+# Google Sheets dev-notes-to-self
 
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=xH
-Testing with more consecutive pixels 
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-R
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-B
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=xF
-
-detect if we're in run-length encoding mode. 
-That is, the encoding of two blue pixels `11` is {10}{0001}
-encoded as {A}{B}, where A is four bits representing the color A is the b64-translated value of N and V is just four bits representing the color value from 1-16.
-
-So the `xM` of 16 pixels above is 110001001100 = {110001001}{1}
-
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-xJ
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-xJ
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-xB
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x-xJ
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=x8
-
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=xM
-
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=S
-https://pico-8-edu.com/?c=Y2xzKDEpc3ByKDEsNjQsMCk=&g=yE
-
-### b64 error?
-
-I had this wrapper mostly working, but was seeing errors where '>' and '?' characters (CHRs 62 and 63) in code were sometimes (but not always) swapped when opening a cart link generated by this spreadsheet in Education Edition. Adding or removing whitespace in the cart seemed to make the problem go away?! Eventually I discoverd that PICO8's @URL format seems to swap the meaning of '-' and '_' in its b64 encoding compared to the typical urlsafe encoding. Those represent values 62 and 63, so we'd expect a common decoding issue when > or ? characters line up with three-character boundaries in the input data (we'd also see this for other combinations of characters but mostly less used extended characters). I don't know if this is some light obfuscation or was unintentional, but I've adjusted this wrapper to match what PICO8's URL format seems to expect.
-
-## Google Sheets notes-to-self
-
-It's possible to build a lot of functionality in spreadsheets (for example, a string->b64 encoder), even without incorporating scripting (AppScript, VBA, etc). A few more modern spreadsheet functions have made that easier than it was a decade ago:
+It's possible to build a lot of functionality in spreadsheets (for example, a string->b64 encoder), even without incorporating scripting (AppScript, VBA, etc). A few more modern spreadsheet functions have made that easier than it was a decade ago in the time of Array Formulas and intermediate-data worksheets and so on:
 
 * `MAP()` and `LAMBDA()` are powerful and flexible alternatives to array formulas or having sheets of 'intermediate data' that later formulas process.
 
