@@ -87,7 +87,11 @@ So, specifically, for the PICO8 @URL encoding I'm using this b64 mapping of valu
 
 ## @URL Code Encoding
 
-Some similar trial and error tests of encoding simple program data and seeing what the output looks like. For reference, the character '0' is CHR(48) and '?' is CHR(63), chosen for having recognizable binary representations of '00110000' and '00111111'. 
+I've done some similar trial and error tests of encoding simple program data and seeing what the output looks like. I've discovered there's some compression I don't fully understand applied to all but the most trivial code. However, before I dive into those details, this compression seems to be optional and indicated to PICO8 Edu by a specific header added to the data.  That is, if I simply b64 encode (with the caveat above) program code and pass it as a @URL parameter, PICO8 Edu Edition does successfully interpret it, it's just much less space-efficient. So for my proof-of-concept spreadsheet IDE I'm going to ignore compression for now to get it working.
+
+### Encoding Investigation
+
+For reference, the character '0' is CHR(48) and '?' is CHR(63), chosen for having recognizable binary representations of '00110000' and '00111111'. 
 
 I show padding characters = as just unknown bits x for now.
 
@@ -122,13 +126,9 @@ Further looking at outputs on a few realistic code snippets, some see straightfo
 | cls(1)cls(1)cls(1) | AHB4YQASABE3H-8G20esu1w= | No! |
 | cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1)cls(1) | AHB4YQA2ABM3H-8G20esu-z-Pw== | No! |
 
-The example with clearly repeating code snippets encodes to something that decodes as binary data, again suggesting some compression routine has been run that looks for common multi-character substrings and replaces them with some token. You can also see why, as the code with many copies of cls(1) is barely larger than the smaller code.
+The example with clearly repeating code snippets encodes to something that decodes as binary data, again suggesting some compression routine has been run that looks for common multi-character substrings and replaces them with some token. You can also see why, as the code with many copies of cls(1) is barely larger than the smaller code. This is a good stopping point for now.
 
-### Compression is Optional
-
-However, I've seen that if I feed uncompressed input into a b64 encoder, it's still decoded by the Edu Edition (just very inefficient in space usage), so the compression must be optional and indicated with a header. So  for my proof-of-concept spreadsheet IDE I'm going to ignore compression for now. It will be a fun experiment to come back and look into it some day, though.
-
-### Further examination of compression
+### Further Investigation
 
 One more intriguing hint. If I b64 decode the earlier string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a next-gen version used to compress data for the @URL format and this is a header that tells the decoder built in to PICO8 Edu what compression is used?
 
