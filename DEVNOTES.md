@@ -149,16 +149,16 @@ A few more input->output examples for simple repeating inputs and what values th
 | ------------- | --- | --- | --- |
 | 0 *(char #48) (12x)*  | AAsHGDw=     |  000 011 007 024 060                  | 0 0 44  7  6  3 48 |
 | ◝ *(char #255) (12x)* | AAzfg8ED     | 000 012 223 131 193 003               | 0 0 51 31 32 60  4  3 |
-| ◝ *(13x)*            | AAzfg8EF     | 000 012 223 131 193 005               | 0 0 51 31 32 60  4  5 |
+| ◝ *(13x)*             | AAzfg8EF     | 000 012 223 131 193 005               | 0 0 51 31 32 60  4  5 |
 | ◝ *(14x)*             | AAzfg8EH     | 000 012 223 131 193 007               | 0 0 51 31 32 60  4  7 |
-| ◝ *(24x)*            | AAzfg8Fv     | 000 012 223 131 193 111               | 0 0 51 31 32 60  4 47 |
-| ◝ *(25x)*             | AA3fg8F-AA== | \*000 013 223 131 193 127 000         | 0 0 55 31 32 60  4 63  0  0 |
+| ◝ *(24x)*             | AAzfg8Fv     | 000 012 223 131 193 111               | 0 0 51 31 32 60  4 47 |
+| ◝ *(25x)*             | AA3fg8F-AA== | \*000 013 223 131 193 127 000        | 0 0 55 31 32 60  4 63  0  0 |
 | ◝ *(72x)*             | AA-fg8H---8L | \*000 015 223 131 193 255 255 255 011 | 0 0 63 31 32 60  6 63 63 63 60 11 |
-| 0*(12x)*◝*(12x)*        | AA8HGDzfg8ED | 000 015 007 024 060 223 131 193 003   |  |
-| {0◝}*(12x)*           | AA4HfA8OfwE  | 000 014 007 124 015 014 127 001       |  |
-| 1 *(257x)* | ABkXGPz-*(15x)*9-AA== | \*000 025 023 024 252 255*(12x)* 127 000 |  |
+| 0 *(12x)* ◝ *(12x)*   | AA8HGDzfg8ED | 000 015 007 024 060 223 131 193 003   |  |
+| {0◝} *(12x)*           | AA4HfA8OfwE  | 000 014 007 124 015 014 127 001       |  |
+| 1 *(257x)* | ABkXGPz- *(15x)* 9-AA== | \*000 025 023 024 252 255 *(12x)* 127 000 |  |
 
-(\* not sure I got these decodings right with the online tool I used: I quickly swapped in a / for the - character as that's what it expected for value 63 )
+(\* not sure I got these decodings right with the online tool I used: I quickly swapped in a / for the - character as that's what the online decoder expected for value 63)
 
 Unfortunately the encoding is not immediately obvious by eye (it would be a smoking gun for a very simple RLE scheme if we saw the values 255 and 12/13/14/24/25/72 encoded somewhere for the strings that include repeats of char 255 that number of times), though it's also possible I'm reading the byte order swapped or with an offset.
 
