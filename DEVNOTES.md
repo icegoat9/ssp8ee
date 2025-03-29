@@ -153,9 +153,15 @@ A few more input->output examples for simple repeating inputs and what values th
 | Program text  | @URL b64 without prefix AHB4YQ__ | b64 decoded to decimal? | b64 raw values |
 | ------------- | --- | --- | --- |
 | 0 *(char #48) (12x)*  | AAsHGDw=     |   `000 011 007 024 060`                   | `0 0 44  7  6  3 48`    |
+| 0 *(13x)*             | AAsHGFw=     |   `000 011 007 024 092`                   | `0 0 44  7  6  5 48`    |
+| 0 *(14x)*             | AAsHGHw=     |   `000 011 007 024 124`                   | `0 0 44  7  6  7 48`    |
 | ◝ *(char #255) (12x)* | AAzfg8ED     |   `000 012 223 131 193 003`               | `0 0 51 31 32 60  4  3` |
 | ◝ *(13x)*             | AAzfg8EF     |   `000 012 223 131 193 005 `              | `0 0 51 31 32 60  4  5` | 
 | ◝ *(14x)*             | AAzfg8EH     |   `000 012 223 131 193 007`               | `0 0 51 31 32 60  4  7` | 
+| ◝ *(20x)*             | AAzfg8Ev     |   `000 012 223 131 193 047`               | `0 0 51 31 32 60  4 47` | 
+| ◝ *(21x)*             | AAzfg8E-     |   `000 012 223 131 193 063`               | `0 0 51 31 32 60  4 63` | 
+| ◝ *(22x)*             | AAzfg8FP     |   `000 012 223 131 193 079`               | `0 0 51 31 32 60  5 15` | 
+| ◝ *(23x)*             | AAzfg8Ff     |   `000 012 223 131 193 095`               | `0 0 51 31 32 60  5 31` | 
 | ◝ *(24x)*             | AAzfg8Fv     |   `000 012 223 131 193 111`               | `0 0 51 31 32 60  5 47` | 
 | ◝ *(25x)*             | AA3fg8F-AA== | \*`000 013 223 131 193 127 000`           | `0 0 55 31 32 60  5 63  0  0` |
 | ◝ *(72x)*             | AA-fg8H---8L | \*`000 015 223 131 193 255 255 255 011`   | `0 0 63 31 32 60  7 63 63 63 60 11` |
@@ -169,7 +175,21 @@ Unfortunately the encoding is not immediately obvious by eye (it would be a smok
 
 When looking for a byte swap or bit shift in data, I often quickly scan for values that seem to be 1-2 bits shifted from a significant value.
 
-For example, it's slightly suggestive that all of the encodings of char#255 feature 223 in the output which is 255-32 (one bit different, almost entirely 1s in binary), though if the issue is just a byte order swap or bitshift I'd expect to see two consecutive bytes which could be arranged to give 8 consecutive 1s in some way, if the 255 value is hidden in there.
+For example, it's slightly suggestive that all of the encodings of char#255 feature 223 in the output which is 255-32 (one bit different, almost entirely 1s in binary), though if the issue is just a byte order swap or bit shift I'd expect to see two consecutive bytes which could be arranged to give 8 consecutive 1s in some way, if the 255 value is hidden in there.
+
+Another consideration is some part of this data could be a checksum-- though given that the difference between the outputs generated for `◝(13x)` and `◝(14x)` is only a single bit (that bit must be part of encoding the number of repeated characters), it doesn't seem there's room for a checksum which would also change.
+
+Another comparison, 12x of various characters with different bit patterns:
+
+| Program text  | b64 w/o prefix | b64 decoded to decimal? | b64 raw values | binary |
+| ------------- | --- | --- | --- | --- |
+| 0 *(char #48) (12x)*  | AAsHGDw= | `000 011 007 024 060`     | `0 0 44  7  6  3 48`    | `00000000 00001011 00000111 00011000 00111100` |
+| 1 *(char #49) (12x)*  | AAsXGDw= | `000 011 023 024 060`     | `0 0 44 23  6  3 48`    | `00000000 00001011 00010111 00011000 00111100` |
+| ? *(#63) (12x)*  | AAv3GDw= | `000 011 247 024 060`     | `0 0 47 55  6  7 48`         | `00000000 00001011 11110111 00011000 00111100` |
+| ○ *(#127) (12x)* | AAzvYfAA | `000 012 239 097 240 000` | `0 0 51 47 24 31  0  0`      | `00000000 00001100 11101111 01100001 11110000 00000000` |
+| ◝ *(#255) (12x)* | AAzfg8ED | `000 012 223 131 193 003` | `0 0 51 31 32 60  4  3`      | `00000000 00001100 11011111 10000011 11000001 00000011` |
+
+We do see the patterns 110000, 110001, and 111111 (48, 49, and 63) offset in the binary representation of the first three, which is suggestive, though that pattern doesn't obvious continue for higher-value characters.
 
 # Google Sheets dev-notes-to-self
 
