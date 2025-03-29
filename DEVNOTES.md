@@ -130,7 +130,7 @@ The example with clearly repeating code snippets encodes to something that decod
 
 ### Further Investigation
 
-One more intriguing hint. If I b64 decode the earlier string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a next-gen version used to compress data for the @URL format and this is a header that tells the decoder built in to PICO8 Edu what compression is used?
+One more intriguing hint. If I b64 decode the earlier string `AHB4YQASABE3H-8G20esu1w=`, I get binary data but with the text string PXA near the beginning. I recall that PX8 and PX9 were sample lightweight graphics compression libraries [published by Zep on the BBS](https://www.lexaloffle.com/bbs/?tid=34058), so I'll speculate that PXA is a custom text compression library used for the @URL format and this is a header that tells the decoder built in to PICO8 Edu what compression is used?
 
 In particular, the first few output values in the b64-decoded version of `cls(1)cls(1)cls(1)` are `239,191,129,112,120,97,239,191,189,18,239,191,189,...`, and 112,120,97 is the string "PXA". So perhaps 239,191,129 indicates separators on a header, "PXA" is the compression method, and the standalone number "18" is a version (or length, or some other config value)? I could also just ask @zep and see if he wants to share, but this has been a fun diversion for now.
 
@@ -154,14 +154,15 @@ A few more input->output examples for simple repeating inputs and what values th
 | ------------- | --- | --- | --- |
 | 0 *(char #48) (12x)*  | AAsHGDw=     |   000 011 007 024 060                   | 0 0 44  7  6  3 48    |
 | ◝ *(char #255) (12x)* | AAzfg8ED     |   000 012 223 131 193 003               | 0 0 51 31 32 60  4  3 |
-| ◝ *(13x)*             | AAzfg8EF     |   000 012 223 131 193 005               | 0 0 51 31 32 60  4  5 |
-| ◝ *(14x)*             | AAzfg8EH     |   000 012 223 131 193 007               | 0 0 51 31 32 60  4  7 |
-| ◝ *(24x)*             | AAzfg8Fv     |   000 012 223 131 193 111               | 0 0 51 31 32 60  5 47 |
+| ◝ *(13x)*             | AAzfg8EF     |   000 012 223 131 193 005               | 0 0 51 31 32 60  4  5 | 
+| ◝ *(14x)*             | AAzfg8EH     |   000 012 223 131 193 007               | 0 0 51 31 32 60  4  7 | 
+| ◝ *(24x)*             | AAzfg8Fv     |   000 012 223 131 193 111               | 0 0 51 31 32 60  5 47 | 
 | ◝ *(25x)*             | AA3fg8F-AA== | \*000 013 223 131 193 127 000           | 0 0 55 31 32 60  5 63  0  0 |
 | ◝ *(72x)*             | AA-fg8H---8L | \*000 015 223 131 193 255 255 255 011   | 0 0 63 31 32 60  7 63 63 63 60 11 |
 | 0 *(12x)* ◝ *(12x)*   | AA8HGDzfg8ED |   000 015 007 024 060 223 131 193 003   |  |
 | {0◝} *(12x)*          | AA4HfA8OfwE= |   000 014 007 124 015 014 127 001       | 0 0 56  7 31  0 60 14 31 48  4 |
 | 1 *(257x)* | ABkXGPz- *(15x)* 9-AA== | \*000 025 023 024 252 255 *(12x)* 127 000 |  |
+
 
 (\* not sure I got these decodings right with the online tool I used: I quickly swapped in a / for the - character as that's what the online decoder expected for value 63)
 
