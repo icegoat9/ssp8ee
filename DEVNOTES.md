@@ -152,17 +152,16 @@ A few more input->output examples for simple repeating inputs and what values th
 
 | Program text  | @URL b64 without prefix AHB4YQ__ | b64 decoded to decimal? | b64 raw values |
 | ------------- | --- | --- | --- |
-| 0 *(char #48) (12x)*  | AAsHGDw=     |   000 011 007 024 060                   | 0 0 44  7  6  3 48    |
-| ◝ *(char #255) (12x)* | AAzfg8ED     |   000 012 223 131 193 003               | 0 0 51 31 32 60  4  3 |
-| ◝ *(13x)*             | AAzfg8EF     |   000 012 223 131 193 005               | 0 0 51 31 32 60  4  5 | 
-| ◝ *(14x)*             | AAzfg8EH     |   000 012 223 131 193 007               | 0 0 51 31 32 60  4  7 | 
-| ◝ *(24x)*             | AAzfg8Fv     |   000 012 223 131 193 111               | 0 0 51 31 32 60  5 47 | 
-| ◝ *(25x)*             | AA3fg8F-AA== | \*000 013 223 131 193 127 000           | 0 0 55 31 32 60  5 63  0  0 |
-| ◝ *(72x)*             | AA-fg8H---8L | \*000 015 223 131 193 255 255 255 011   | 0 0 63 31 32 60  7 63 63 63 60 11 |
-| 0 *(12x)* ◝ *(12x)*   | AA8HGDzfg8ED |   000 015 007 024 060 223 131 193 003   |  |
-| {0◝} *(12x)*          | AA4HfA8OfwE= |   000 014 007 124 015 014 127 001       | 0 0 56  7 31  0 60 14 31 48  4 |
-| 1 *(257x)* | ABkXGPz- *(15x)* 9-AA== | \*000 025 023 024 252 255 *(12x)* 127 000 |  |
-
+| 0 *(char #48) (12x)*  | AAsHGDw=     |   `000 011 007 024 060`                   | `0 0 44  7  6  3 48`    |
+| ◝ *(char #255) (12x)* | AAzfg8ED     |   `000 012 223 131 193 003`               | `0 0 51 31 32 60  4  3` |
+| ◝ *(13x)*             | AAzfg8EF     |   `000 012 223 131 193 005 `              | `0 0 51 31 32 60  4  5` | 
+| ◝ *(14x)*             | AAzfg8EH     |   `000 012 223 131 193 007`               | `0 0 51 31 32 60  4  7` | 
+| ◝ *(24x)*             | AAzfg8Fv     |   `000 012 223 131 193 111`               | `0 0 51 31 32 60  5 47` | 
+| ◝ *(25x)*             | AA3fg8F-AA== | \*`000 013 223 131 193 127 000`           | `0 0 55 31 32 60  5 63  0  0` |
+| ◝ *(72x)*             | AA-fg8H---8L | \*`000 015 223 131 193 255 255 255 011`   | `0 0 63 31 32 60  7 63 63 63 60 11` |
+| 0 *(12x)* ◝ *(12x)*   | AA8HGDzfg8ED |   `000 015 007 024 060 223 131 193 003`   |  |
+| {0◝} *(12x)*          | AA4HfA8OfwE= |   `000 014 007 124 015 014 127 001`       | `0 0 56  7 31  0 60 14 31 48  4` |
+| 1 *(257x)* | ABkXGPz- *(15x)* 9-AA== | \*`000 025 023 024 252 255 *(12x)* 127 000` |  |
 
 (\* not sure I got these decodings right with the online tool I used: I quickly swapped in a / for the - character as that's what the online decoder expected for value 63)
 
@@ -170,7 +169,7 @@ Unfortunately the encoding is not immediately obvious by eye (it would be a smok
 
 When looking for a byte swap or bit shift in data, I often quickly scan for values that seem to be 1-2 bits shifted from a significant value.
 
-For example, it's slightly suggestive that all of the encodings of char#255 feature 223 in the output which is 255-32 (one bit off), and encoding of char #48 includes a 24 in that same position which is one bit shift from 48, though with an offset in b64 decoding (which shifts between 8-bit and 6-bit values) I'd expect an error to lead to a 2-bit offset. Looking at the string of decimal or b64 values as a long binary string doesn't show any sequences of 8 consecutive 1's at any offset so it's not as simple as just an offset.
+For example, it's slightly suggestive that all of the encodings of char#255 feature 223 in the output which is 255-32 (one bit different, almost entirely 1s in binary), though if the issue is just a byte order swap or bitshift I'd expect to see two consecutive bytes which could be arranged to give 8 consecutive 1s in some way, if the 255 value is hidden in there.
 
 # Google Sheets dev-notes-to-self
 
